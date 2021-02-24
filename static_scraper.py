@@ -49,15 +49,28 @@ def stations_to_db(text):
         engine.execute("insert into station values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", vals)
     return
 
-#stations_to_db(res.text)
+stations_to_db(res.text)
 
 
 ##DYNAMIC SCRAPER
 
-#Creat table using ORM
+#Creat availability table using ORM
 availability = Table(
     'availability', meta,
     Column('number', Integer, primary_key=True),
+    Column('available_bikes', Integer),
+    Column('available_bike_stands', Integer),
+    Column('last_update', Integer)
+)
+
+#Create table. Create_all is conditional by default. Won't recreate a table already preent
+meta.create_all(engine)
+
+#Creat live_historic_availability table using ORM
+live_historic_avail = Table(
+    'live_historic_avail', meta,
+    #Note, number not a primary key here as will have repeated values
+    Column('number', Integer),
     Column('available_bikes', Integer),
     Column('available_bike_stands', Integer),
     Column('last_update', Integer)
@@ -72,29 +85,24 @@ conn = engine.connect()
 
 #Insert into the availability table using sql alchemy object relational mapping
 
-def write_avail_to_db(text):
-    stations = json.loads(text)
-    print(type(stations), len(stations))
-    for station in stations:
-        #print(station)
-        print({key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}})
-        station = {key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}}
-        print(type(station))
+# def write_avail_to_db(text):
+#     stations = json.loads(text)
+#     print(type(stations), len(stations))
+#     for station in stations:
+#         #print(station)
+#         print({key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}})
+#         station = {key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}}
+#         print(type(station))
+#
+#
+#         ins = availability.insert().values(station)
+#         print(ins)
+#         conn.execute(ins)
+#
+#     return
 
-
-        # ins = availability.insert().values(station["number"],
-        #                                    station["available_bikes"],
-        #                                    station["available_bike_stands"],
-        #                                    station["last_update"])
-        #execute it
-        ins = availability.insert().values(station)
-        print(ins)
-        conn.execute(ins)
-
-    return
-
-
-write_avail_to_db(res.text)
+#Execute the insert
+#write_avail_to_db(res.text)
 
 
 

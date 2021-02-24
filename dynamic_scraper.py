@@ -41,6 +41,11 @@ meta.create_all(engine)
 ##Connection object to represent connection resource.
 conn = engine.connect()
 
+##If the table already has rows, delete them all
+trans = conn.begin()
+conn.execute("truncate table availability")
+trans.commit()
+
 #Insert into the availability table using sql alchemy object relational mapping
 
 def write_avail_to_db(text):
@@ -58,3 +63,44 @@ def write_avail_to_db(text):
     return
 
 write_avail_to_db(res.text)
+
+
+
+##--------LIVE_HISTORIC AVAILABILITY TABLE----
+
+#Create table using ORM
+live_historic_avail = Table(
+    'live_historic_avail', meta,
+    Column('number', Integer),
+    Column('available_bikes', Integer),
+    Column('available_bike_stands', Integer),
+    Column('last_update', Integer)
+)
+
+#Create table. Create_all is conditional by default. Won't recreate a table already preent
+meta.create_all(engine)
+
+##Connection object to represent connection resource.
+conn = engine.connect()
+
+
+
+
+#Insert into the live_historic_avail table
+
+def write_avail_to_histdb(text):
+    stations = json.loads(text)
+    print(type(stations), len(stations))
+    for station in stations:
+        #print(station)
+        print({key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}})
+        station = {key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}}
+        print(type(station))
+        ins = live_historic_avail.insert().values(station)
+        print(ins)
+        conn.execute(ins)
+
+    return
+
+write_avail_to_histdb(res.text)
+
