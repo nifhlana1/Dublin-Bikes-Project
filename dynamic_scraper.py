@@ -6,11 +6,14 @@ import json
 
 
 #DATABASE DETAILS
-URI="dbbikes.cgz9bu4plq6e.us-east-1.rds.amazonaws.com"
+#URI="dbbikes.cgz9bu4plq6e.us-east-1.rds.amazonaws.com"
+URI="dbbikes.cqj4rrrshnza.us-east-1.rds.amazonaws.com"
 PORT="3306"
 DB = "dbbikes"
-USER = "aine"
-PASSWORD = "ainedbbikes"
+#USER = "aine"
+#PASSWORD = "ainedbbikes"
+USER="dbbikes1"
+PASSWORD="dbbikes1"
 
 #DUBLIN BIKES API CONNECTION
 APIKEY = "c003ff338508fcee56ace550c4cd05659b717e61"

@@ -9,11 +9,11 @@ import requests
 import json
 
 
-URI="dbbikes.cgz9bu4plq6e.us-east-1.rds.amazonaws.com"
+URI="dbbikes.cqj4rrrshnza.us-east-1.rds.amazonaws.com"
 PORT="3306"
 DB = "dbbikes"
-USER = "aine"
-PASSWORD = "ainedbbikes"
+USER = "dbbikes1"
+PASSWORD = "dbbikes1"
 
 
 
