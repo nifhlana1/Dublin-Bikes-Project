@@ -3,7 +3,7 @@ import traceback
 import datetime
 import time
 import sqlalchemy as sqla
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, BigInteger
 import traceback
 import glob
 import os
@@ -77,7 +77,7 @@ live_historic_avail = Table(
     Column('number', Integer),
     Column('available_bikes', Integer),
     Column('available_bike_stands', Integer),
-    Column('last_update', Integer)
+    Column('last_update', BigInteger)
 )
 
 #Create table. Create_all is conditional by default. Won't recreate a table already preent

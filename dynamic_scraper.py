@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, BigInteger, DateTime
 import requests
 import json
+from datetime import datetime
 
 
 #DATABASE DETAILS
@@ -35,7 +36,22 @@ availability = Table(
     Column('number', Integer, primary_key=True),
     Column('available_bikes', Integer),
     Column('available_bike_stands', Integer),
-    Column('last_update', Integer)
+    Column('last_update', BigInteger),
+    Column('current_time', Integer),
+    Column('day', Integer),
+    Column('date', DateTime)
+)
+
+#Create table using ORM
+live_historic_avail = Table(
+    'live_historic_avail', meta,
+    Column('number', Integer),
+    Column('available_bikes', Integer),
+    Column('available_bike_stands', Integer),
+    Column('last_update', BigInteger),
+    Column('current_time', Integer),
+    Column('day', Integer),
+    Column('date',DateTime)
 )
 
 #Create table. Create_all is conditional by default. Won't recreate a table already preent
@@ -50,6 +66,10 @@ conn.execute("truncate table availability")
 trans.commit()
 
 #Insert into the availability table using sql alchemy object relational mapping
+now = datetime.now()
+current_time = now.strftime("%H%M") #time as a 3-4 sequence of numbers
+day = datetime.today().weekday() #produces an int value for day of the week
+date = now.strftime("%Y-%m-%d") #probably not going to be used computationally, just for our benefit
 
 def write_avail_to_db(text):
     stations = json.loads(text)
@@ -59,9 +79,10 @@ def write_avail_to_db(text):
         print({key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}})
         station = {key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}}
         print(type(station))
-        ins = availability.insert().values(station)
-        print(ins)
+        ins = availability.insert().values(station,current_time=current_time, day=day, date=date)
         conn.execute(ins)
+        print(ins)
+
 
     return
 
@@ -71,20 +92,13 @@ write_avail_to_db(res.text)
 
 ##--------LIVE_HISTORIC AVAILABILITY TABLE----
 
-#Create table using ORM
-live_historic_avail = Table(
-    'live_historic_avail', meta,
-    Column('number', Integer),
-    Column('available_bikes', Integer),
-    Column('available_bike_stands', Integer),
-    Column('last_update', Integer)
-)
+
 
 #Create table. Create_all is conditional by default. Won't recreate a table already preent
-meta.create_all(engine)
-
-##Connection object to represent connection resource.
-conn = engine.connect()
+# meta.create_all(engine)
+#
+# ##Connection object to represent connection resource.
+# conn = engine.connect()
 
 
 
@@ -99,11 +113,11 @@ def write_avail_to_histdb(text):
         print({key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}})
         station = {key:station[key] for key in station.keys() & {'number','available_bikes','available_bike_stands','last_update'}}
         print(type(station))
-        ins = live_historic_avail.insert().values(station)
-        print(ins)
+        ins = live_historic_avail.insert().values(station,current_time=current_time, day=day, date=date)
+        #print(ins)
         conn.execute(ins)
 
     return
 
-write_avail_to_histdb(res.text)
+# write_avail_to_histdb(res.text)
 
