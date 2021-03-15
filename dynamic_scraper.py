@@ -119,5 +119,5 @@ def write_avail_to_histdb(text):
 
     return
 
-# write_avail_to_histdb(res.text)
+write_avail_to_histdb(res.text)
 
