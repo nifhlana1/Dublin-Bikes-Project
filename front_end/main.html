@@ -1,0 +1,30 @@
+import mysql.connector
+import requests
+import json
+from datetime import datetime
+
+
+print("trying to connect")
+mydb = mysql.connector.connect(
+    host="dublinbikes.chj6z1a17hdc.us-east-1.rds.amazonaws.com",
+    user="admin",
+    passwd="Aws72gene!",
+    database='DublinBikes',
+    charset='utf8mb4',
+ )
+
+mycursor = mydb.cursor(dictionary=False)
+
+print("Connected")
+
+sql_select_Query = "SELECT *
+FROM LiveHistoricalData.COLUMNS
+WHERE TABLE_NAME = N'Customers'"
+cursor = mydb.cursor()
+cursor.execute(sql_select_Query)
+# get all records
+records = cursor.fetchall()
+print("Total number of rows in table: ", cursor.rowcount)
+
+
+
