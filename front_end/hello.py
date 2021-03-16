@@ -45,37 +45,30 @@ station_records = cursor.fetchall()
 (at intervals of 5 minutes according to information in live_historic_availability)
 , at every station."""
 
-data = []
+data = {}
 for station in station_records:
-    print("'{")
-    data.append("{")
-    data.append(station[0])
-    print(station[0])
-    station_var=str(station[0])
+    print(data)
+    station_var = station[0]
+    #station_var = str(station_var)
+    data[station_var] = {}
+    print(station_var)
     for day in day_records:
-        print("{")
-        data.append("{"+str(day[0])+"{")
-        print(day[0])
-        print("{")
-        day_var = str(day[0])
+        data[station_var][day[0]] = {}
+        print(data)
+        day_var = day[0]
         #Select query: average for every day and every time for station
         for i in time_records:
-            #print(i[0])
+            # print(i[0])
             time_i = str(i[0])
-            #print(time_i)
+            # print(time_i)
             cursor = mydb.cursor()
-            sql_select_Query = "SELECT AVG(AvailableBikes) as AverageBikes FROM DublinBikes.LiveHistoricalData WHERE DayOfWeek="+day_var+" AND StationName='"+str(station_var)+"' AND Time = "+str(time_i)
+            sql_select_Query = "SELECT AVG(AvailableBikes) as AverageBikes FROM DublinBikes.LiveHistoricalData WHERE DayOfWeek="+str(day_var)+" AND StationName='"+str(station_var)+"' AND Time = "+str(time_i)
             cursor.execute(sql_select_Query)
             records = cursor.fetchall()
-            print(str(time_i)+":"+str(records[0][0]))
-            data.append(str(time_i)+":"+str(records[0][0])+",")
-        print("}}")
-        data.append("}}")
+            data[station_var][day[0]][time_i] = str(records[0][0])
 
-    print("}")
-    data.append("}")
-print("}")
-data.append("}'")
+
+print(data)
 
 
 

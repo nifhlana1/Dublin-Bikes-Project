@@ -48,18 +48,14 @@ station_records = station_records[0]
 (at intervals of 5 minutes according to information in live_historic_availability)
 , at every station."""
 
-data = []
+data = {}
 for station in station_records:
-    print("{")
-    data.append("{")
-    print(station)
-    data.append(station)
+    data[station] = {}
+    print(data)
     station_var=str(station)
     for day in day_records:
-        print("{")
-        data.append("{"+str(day[0])+"{")
-        print(day[0])
-        print("{")
+        data[station][day[0]] = {}
+        print(data)
         day_var = str(day[0])
         #Select query: average for every day and every time for station
         for i in time_records:
@@ -70,16 +66,11 @@ for station in station_records:
             sql_select_Query = "SELECT AVG(AvailableBikes) as AverageBikes FROM DublinBikes.LiveHistoricalData WHERE DayOfWeek=0 AND StationName='"+str(station_var)+"' AND Time = "+str(time_i)
             cursor.execute(sql_select_Query)
             records = cursor.fetchall()
-            print(str(time_i)+":"+str(records[0][0]),end=",")
-            data.append(str(time_i)+":"+str(records[0][0]))
-        print("}")
-        data.append("}")
+            data[station][day[0]][time_i] = str(records[0][0])
 
-    print("}")
-    data.append("}")
-print("}")
-data.append("}")
 
+
+print(data)
 
 
 #Convert the string with all of the averages into a json file and save
